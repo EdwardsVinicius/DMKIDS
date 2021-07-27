@@ -2,3 +2,4 @@ vendor
 
 env_old1.php
 .phpunit.result.cache
+database.rules.json

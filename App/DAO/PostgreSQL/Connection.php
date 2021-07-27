@@ -11,13 +11,13 @@ abstract class Connection
 
     public function __construct()
     {
-        $host = getenv('BD_HOST');
-        $port = getenv('BD_PORT');
-        $user = getenv('BD_USER');
-        $pass = getenv('BD_PASSWORD');
-        $dbname = getenv('BD_DBNAME');
+        $host = getenv('BD_POSTGRESQL_HOST');
+        $port = getenv('BD_POSTGRESQL_PORT');
+        $user = getenv('BD_POSTGRESQL_USER');
+        $pass = getenv('BD_POSTGRESQL_PASSWORD');
+        $dbname = getenv('BD_POSTGRESQL_DBNAME');
 
-        $dsn = "mysql:host={$host};dbname={$dbname};port={$port}";
+        $dsn = "pgsql:host={$host};dbname={$dbname};port={$port}";
 
         $this->pdo = new \PDO($dsn, $user, $pass);
         $this->pdo->setAttribute(

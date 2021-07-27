@@ -20,7 +20,7 @@ final class PersonDAO extends Connection
         $statement = $this->pdo
             ->prepare(" SELECT 
                             * 
-                        FROM administracao.pessoa
+                        FROM adm.pessoa
                         ");
         $statement->execute();
         $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
@@ -28,71 +28,71 @@ final class PersonDAO extends Connection
         return $result;
     }
 
-    public function getPersonByCpf(string $cpf): array
-    {
-        $statement = $this->pdo
-            ->prepare(' SELECT 
-                            idpessoa,
-                            naturalidade,
-                            nome,
-                            datanascimento,
-                            sexo,
-                            cpf,
-                            nomemae,
-                            email,
-                            telefone1,
-                            telefone2
-                        FROM administracao.pessoa
-                        WHERE idpessoa = :cpf
-                        ORDER BY idpessoa
-            ');
-        $statement->bindValue('cpf', $cpf);
-        $statement->execute();
-        $response = $statement->fetchAll(\PDO::FETCH_ASSOC);
-        return $response;
-    }
+    // public function getPersonByCpf(string $cpf): array
+    // {
+    //     $statement = $this->pdo
+    //         ->prepare(' SELECT 
+    //                         idpessoa,
+    //                         naturalidade,
+    //                         nome,
+    //                         datanascimento,
+    //                         sexo,
+    //                         cpf,
+    //                         nomemae,
+    //                         email,
+    //                         telefone1,
+    //                         telefone2
+    //                     FROM administracao.pessoa
+    //                     WHERE idpessoa = :cpf
+    //                     ORDER BY idpessoa
+    //         ');
+    //     $statement->bindValue('cpf', $cpf);
+    //     $statement->execute();
+    //     $response = $statement->fetchAll(\PDO::FETCH_ASSOC);
+    //     return $response;
+    // }
 
-    public function getPersonById(int $id): array
-    {
-        $statement = $this->pdo
-            ->prepare(' SELECT 
-                            idpessoa,
-                            naturalidade,
-                            nome,
-                            datanascimento,
-                            sexo,
-                            cpf,
-                            nomemae,
-                            email,
-                            telefone1,
-                            telefone2
-                        FROM administracao.pessoa
-                        WHERE idpessoa = :id
-                        ORDER BY idpessoa
-            ');
-        $statement->bindValue('id', $id);
-        $statement->execute();
-        $response = $statement->fetchAll(\PDO::FETCH_ASSOC);
-        return $response;
-    }
+    // public function getPersonById(int $id): array
+    // {
+    //     $statement = $this->pdo
+    //         ->prepare(' SELECT 
+    //                         idpessoa,
+    //                         naturalidade,
+    //                         nome,
+    //                         datanascimento,
+    //                         sexo,
+    //                         cpf,
+    //                         nomemae,
+    //                         email,
+    //                         telefone1,
+    //                         telefone2
+    //                     FROM administracao.pessoa
+    //                     WHERE idpessoa = :id
+    //                     ORDER BY idpessoa
+    //         ');
+    //     $statement->bindValue('id', $id);
+    //     $statement->execute();
+    //     $response = $statement->fetchAll(\PDO::FETCH_ASSOC);
+    //     return $response;
+    // }
 
     public function registerPerson(PersonModel $person)
     {   
         $statement = $this->pdo
-            ->prepare('INSERT INTO administracao.pessoa (
+            ->prepare('INSERT INTO adm.pessoa (
                 nome, 
-                datanascimento, 
-                genero,
                 idade,
+                sexo,
+                datanascimento, 
                 cidade,
                 estado,
-                tempoDiagnostico
+                tempodiagnostico
             )
             VALUES(
                 :nome, 
-                :datanascimento, 
-                :genero,
                 :idade,
+                :sexo,
+                :dataNascimento, 
                 :cidade,
                 :estado,
                 :tempoDiagnostico
@@ -100,9 +100,12 @@ final class PersonDAO extends Connection
 
         $statement->execute([
             'nome' => $person->getName(),
-            'datanascimento' => $person->getBirth(),
+            'idade' => $person->getAge(),
             'sexo' => $person->getGender(),
-            ''
+            'dataNascimento' => $person->getBirth(),
+            'cidade' => $person->getCity(),
+            'estado' => $person->getEstate(),
+            'tempoDiagnostico' => $person->getTimeDiagnosis()
         ]);
         //$result = $statement->fetchAll(\PDO::FETCH_ASSOC);
         $idPerson =  $this->pdo->lastInsertId();   
@@ -110,37 +113,37 @@ final class PersonDAO extends Connection
         return $idPerson;
     }
 
-    public function updatePersonData(PersonModel $person): array
-    {
+    // public function updatePersonData(PersonModel $person): array
+    // {
         
-        $statement = $this->pdo
-            ->prepare(' UPDATE administracao.pessoa SET
-                            naturalidade = :naturalidade,
-                            nome = :nome, 
-                            datanascimento = :datanascimento, 
-                            sexo = :sexo, 
-                            cpf = :cpf, 
-                            nomemae = :nomemae, 
-                            email = :email, 
-                            telefone1 = :telefone1, 
-                            telefone2 = :telefone2
-                        WHERE
-                            cpf = :cpf
-        ;');
+    //     $statement = $this->pdo
+    //         ->prepare(' UPDATE administracao.pessoa SET
+    //                         naturalidade = :naturalidade,
+    //                         nome = :nome, 
+    //                         datanascimento = :datanascimento, 
+    //                         sexo = :sexo, 
+    //                         cpf = :cpf, 
+    //                         nomemae = :nomemae, 
+    //                         email = :email, 
+    //                         telefone1 = :telefone1, 
+    //                         telefone2 = :telefone2
+    //                     WHERE
+    //                         cpf = :cpf
+    //     ;');
 
-        $statement->execute([
-            'naturalidade' => $person->getNaturalness(),
-            'nome' => $person->getName(),
-            'datanascimento' => $person->getBirth(),
-            'sexo' => $person->getGender(),
-            'cpf' => $person->getCpf(),
-            'nomemae' => $person->getMotherName(),
-            'email' => $person->getEmail(),
-            'telefone1' => $person->getPhone1(),
-            'telefone2' => $person->getPhone2()
-        ]);
-        $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
+    //     $statement->execute([
+    //         'naturalidade' => $person->getNaturalness(),
+    //         'nome' => $person->getName(),
+    //         'datanascimento' => $person->getBirth(),
+    //         'sexo' => $person->getGender(),
+    //         'cpf' => $person->getCpf(),
+    //         'nomemae' => $person->getMotherName(),
+    //         'email' => $person->getEmail(),
+    //         'telefone1' => $person->getPhone1(),
+    //         'telefone2' => $person->getPhone2()
+    //     ]);
+    //     $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
-        return $result;
-    }
+    //     return $result;
+    // }
 }

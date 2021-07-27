@@ -28,7 +28,7 @@ class UserController extends Connection
         $user = new UserModel();
 
         $personDAO = new PersonDAO($this->pdo);
-        $person = new PersonModel();
+        $personModel = new PersonModel();
 
         if(strlen($data['password']) < 8){
             $result = [
@@ -55,27 +55,39 @@ class UserController extends Connection
 
             return $response->withStatus(401);
         }
+
+        $this->pdo->beginTransaction();
     
         if($data){
-            $user
-                ->setIdPerson(1)
-                ->setLogin((string)$data['login'])
-                ->setPassword(md5($data['password']))
-                ->setActive((string)'T');
+            $personModel
+                ->setName($data['nome'])
+                ->setAge($data['idade'])
+                ->setGender($data['sexo'])
+                ->setBirth($data['dataNascimento'])
+                ->setCity($data['cidade'])
+                ->setEstate($data['estado'])
+                ->setTimeDiagnosis($data['tempoDiagnostico']);
                  
-            // $result = [
-            //     'message' => [
-            //         'pt' => 'Erro ao cadastrar usuário.',
-            //         'en' => 'Error registering user.'
-            //     ],
-            //     'result' => null
-            // ]; 
-            $response = $response->withjson($result)->withStatus(406);
 
-            // // Try to register person
-            // $idPerson = $personDAO->registerPerson($person);
-    
-            // $user->setIdPerson($idPerson);
+            // Try to register person
+            $idPerson = $personDAO->registerPerson($personModel);
+
+            if($idPerson){
+                $user
+                ->setIdPerson($idPerson)
+                ->setLogin((string)$data['login'])
+                ->setPassword(md5($data['password']));
+            }else{
+                $result = [
+                    'message' => [
+                        'pt' => 'Erro ao cadastrar usuário.',
+                        'en' => 'Error registering user.'
+                    ],
+                    'result' => null
+                ]; 
+                $response = $response->withjson($result)->withStatus(406);
+                $this->pdo->rollBack();
+            }
     
             // Try to register user
             $idUser = $userDAO->registerUser($user);
@@ -91,6 +103,8 @@ class UserController extends Connection
                 $response = $response
                     ->withjson($result)
                     ->withStatus(201);
+                $this->pdo->commit();
+
             }else {
                 $result = [
                     'message' => [
@@ -100,6 +114,7 @@ class UserController extends Connection
                     'result' => null
                 ]; 
                 $response = $response->withjson($result)->withStatus(406);
+                $this->pdo->rollBack();
             }
         }else{
             $result = [
@@ -110,6 +125,7 @@ class UserController extends Connection
                 'result' => null
             ]; 
             $response = $response->withjson($result)->withStatus(406);
+            $this->pdo->rollBack();
         }
     
         return $response;

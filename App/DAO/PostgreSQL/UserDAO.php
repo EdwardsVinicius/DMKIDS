@@ -23,7 +23,7 @@ final class UserDAO extends Connection
         $statement = $this->pdo
             ->prepare(' SELECT
                             *
-                        FROM admin_dmkids.user
+                        FROM adm.usuario
                         WHERE
                             :login = email
 
@@ -39,23 +39,20 @@ final class UserDAO extends Connection
 
         $statement = $this->pdo
             ->prepare(' INSERT INTO 
-                        admin_dmkids.user (
-                            idperson, 
+                        adm.usuario (
+                            idpessoa, 
                             email, 
-                            password, 
-                            active
+                            senha
                         ) VALUES (
                             :idpessoa,
                             :login,
-                            :senha,
-                            :ativo   
+                            :senha 
                         );
             ');
         $statement->execute([
             'idpessoa'=>$user->getIdPerson(),
             'login'=>$user->getLogin(),
-            'senha'=>$user->getPassword(),
-            'ativo' =>$user->getActive()
+            'senha'=>$user->getPassword()
         ]);
 
         $idUser =  $this->pdo->lastInsertId();
@@ -68,12 +65,11 @@ final class UserDAO extends Connection
     {
         $statement = $this->pdo
             ->prepare(' SELECT 
-                            id_user,
-                            idperson,
-                            email,
-                            active
-                        FROM admin_dmkids.user
-                        ORDER BY id_user
+                            idusuario,
+                            idpessoa,
+                            email
+                        FROM adm.usuario
+                        ORDER BY idusuario
             ');
         $statement->execute();
         $response = $statement->fetchAll(\PDO::FETCH_ASSOC);
@@ -90,12 +86,12 @@ final class UserDAO extends Connection
     {
         $statement = $this->pdo
             ->prepare(' SELECT
-                            u.id_user,
-                            p.name,
+                            u.idusuario,
+                            p.nome,
                             u.email
-                        FROM admin_dmkids.user u
-                        join admin_dmkids.person p
-                            on u.idperson = p.idperson
+                        FROM adm.usuario u
+                        join adm.pessoa p
+                            on u.idpessoa = p.idpessoa
                         WHERE email = :email
             ');
         $statement->bindParam('email', $email);
@@ -126,11 +122,11 @@ final class UserDAO extends Connection
     {
         $statement = $this->pdo
             ->prepare(' SELECT 
-                            id_user,
+                            idusuario,
                             email,
-                            password,
-                            idperson
-                        FROM admin_dmkids.user
+                            senha,
+                            idpessoa
+                        FROM adm.usuario
                         WHERE email = :usuario
             ');
         $statement->bindParam('usuario', $user);
@@ -142,9 +138,9 @@ final class UserDAO extends Connection
         
         $user = new UserModel();
         $user
-            ->setIdPerson($users[0]['idperson'])
+            ->setIdPerson($users[0]['idpessoa'])
             ->setLogin($users[0]['email'])
-            ->setPassword($users[0]['password']);
+            ->setPassword($users[0]['senha']);
 
 
         return $user;
@@ -156,9 +152,9 @@ final class UserDAO extends Connection
             ->prepare(' SELECT 
                             idusuario,
                             idpessoa,
-                            login,
+                            email,
                             ativo
-                        FROM administracao.usuario
+                        FROM adm.usuario
                         WHERE idusuario = :idusuario
                         ORDER BY idusuario,ativo
             ');

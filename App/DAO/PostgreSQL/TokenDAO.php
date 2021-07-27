@@ -15,10 +15,10 @@ final class TokenDAO extends Connection
     public function createToken(TokenModel $token): void
     {
         $statement = $this->pdo
-            ->prepare('INSERT INTO admin_dmkids.token
+            ->prepare('INSERT INTO adm.token
                 (
                     token,
-                    id_user,
+                    idpessoa,
                     refreshtoken,
                     dataexpira
                 )

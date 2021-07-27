@@ -65,7 +65,7 @@ class PersonModel
         return $this;
 	}
 
-	public function getAge(): string {
+	public function getAge(): int {
 		return $this->age;
 	}
 
