@@ -43,7 +43,8 @@ class UserController extends Connection
             return $response->withStatus(401);
         }
 
-        if(strlen($data['login']) == 0 || !filter_var($data['login'], FILTER_VALIDATE_EMAIL)){
+        # || !filter_var($data['login'], FILTER_VALIDATE_EMAIL)
+        if(strlen($data['login']) == 0 ){
             $result = [
                 'message' => [
                     'pt' => 'Login invalido.',
