@@ -30,7 +30,7 @@ class UserController extends Connection
         $personDAO = new PersonDAO($this->pdo);
         $personModel = new PersonModel();
 
-        if(strlen($data['password']) < 8){
+        if(strlen($data['password']) < 6){
             $result = [
                 'message' => [
                     'pt' => 'Senha abaixo de 8 caracteres.',
